@@ -49,6 +49,9 @@ def append_costs(network):
         pandapower.create_poly_cost(network, n_bus, 'gen', cp1_eur_per_mw=0, cp0_eur=cost)
         
 
+
+
+
 if __name__ == "__main__":
     network = pn.case_illinois200()
     assign_gen_types(network)
