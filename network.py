@@ -29,7 +29,8 @@ def assign_gen_types(network):
             n_nuke += 1
             
 
-
+assign_gen_type(network)
+append_costs(network)
 
 if __name__ == "__main__":
     network = pn.case_illinois200()
