@@ -55,4 +55,5 @@ if __name__ == "__main__":
     append_costs(network)
     print(network.gen)
     pandapower.plotting.simple_plot(network)
+    pandapower.rundcopp(network)
 
