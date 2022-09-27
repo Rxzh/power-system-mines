@@ -29,12 +29,30 @@ def assign_gen_types(network):
             n_nuke += 1
             
 
-assign_gen_type(network)
-append_costs(network)
+def append_costs(network):
+    coal_cost = 30
+    gas_cost  = 18.5
+    nuke_cost = 5
+    
+    for i in network.gen.index:
+        n_bus = network.gen.loc[i,'bus']
+        
+        if  network.gen.loc[i,'name'][0] == 'c':
+            cost = coal_cost
+        elif network.gen.loc[i,'name'][0] == 'g':
+            cost = gas_cost
+        elif network.gen.loc[i,'name'][0] == 'n':
+            cost = nuke_cost
+        
+        
+        #pandapower.create_pwl_cost(network, n_bus, 'gen', [[network.gen.min_p_mw.at[i], network.gen.max_p_mw.at[i], cost]])
+        pandapower.create_poly_cost(network, n_bus, 'gen', cp1_eur_per_mw=0, cp0_eur=cost)
+        
 
 if __name__ == "__main__":
     network = pn.case_illinois200()
     assign_gen_types(network)
+    append_costs(network)
     print(network.gen)
     pandapower.plotting.simple_plot(network)
 
