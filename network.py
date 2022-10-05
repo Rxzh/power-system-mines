@@ -26,6 +26,9 @@ def assign_gen_types(network):
             network.gen.loc[i,'name'] = 'nuke_{}'.format(n_nuke)
             n_nuke += 1
 
+    t1,t2 = np.percentile(network.sgen['p_mw'],[33,66])
+    n_coal,n_gas,n_nuke = 0,0,0
+
     for i in network.sgen.index:
         if network.sgen.loc[i,'p_mw'] <= t1:
             network.sgen.loc[i,'name'] = 'coal_{}'.format(n_coal)
@@ -74,12 +77,11 @@ def append_costs(network):
 
 if __name__ == "__main__":
     net = pn.case_illinois200()
-    #pandapower.rundcopp(net)
     net.poly_cost['cp0_eur'] = net.poly_cost['cp0_eur']*0
-    net = assign_gen_types(net)
-    net = append_costs(net)
     net.poly_cost['cp1_eur_per_mw'] = net.poly_cost['cp1_eur_per_mw']*0
     net.poly_cost['cp2_eur_per_mw2'] = net.poly_cost['cp2_eur_per_mw2']*0
+    net = assign_gen_types(net)
+    net = append_costs(net)
     print(net.poly_cost)
     net.gen['scaling'] = net.gen['scaling']*0.98
     net.load['scaling'] = net.load['scaling'] * 0.98
