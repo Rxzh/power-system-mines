@@ -43,10 +43,9 @@ def assign_gen_types(network):
     return network
             
 
-def append_costs(network):
+def append_costs(network, gas_cost):
     coal_cost = 30
-    gas_cost  = 18.5
-    nuke_cost = 0
+    nuke_cost = 5
     
     for i in network.gen.index:
         n_bus = network.gen.loc[i,'bus']
@@ -75,16 +74,21 @@ def append_costs(network):
 # pandapower.plotting.simple_plot(network)
 # pandapower.rundcopp(network)
 
-if __name__ == "__main__":
+def calculate_cost(gas_cost):
     net = pn.case_illinois200()
     net.poly_cost['cp0_eur'] = net.poly_cost['cp0_eur']*0
     net.poly_cost['cp1_eur_per_mw'] = net.poly_cost['cp1_eur_per_mw']*0
     net.poly_cost['cp2_eur_per_mw2'] = net.poly_cost['cp2_eur_per_mw2']*0
     net = assign_gen_types(net)
-    net = append_costs(net)
-    print(net.poly_cost)
+    net = append_costs(net, gas_cost)
     net.gen['scaling'] = net.gen['scaling']*0.98
     net.load['scaling'] = net.load['scaling'] * 0.98
     pandapower.rundcopp(net)
-    print(net.res_cost)
+    return net.res_cost
+
+if __name__ == "__main__":
+    gas_cost = [x for x in range(20, 70, 5)]
+    price = [calculate_cost(g) for g in gas_cost]
+    plt.scatter(gas_cost, price)
+    plt.show()
     
