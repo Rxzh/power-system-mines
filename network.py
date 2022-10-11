@@ -12,7 +12,8 @@ import numpy as np
 
 def assign_gen_types(network):
         
-    t1,t2 = np.percentile(network.gen['p_mw'],[33,66])
+    t1,t2 = np.percentile(network.gen['p_mw'],[40,90])
+    print(t1, t2)
     n_coal,n_gas,n_nuke = 0,0,0
     
     for i in network.gen.index:
@@ -29,16 +30,14 @@ def assign_gen_types(network):
     t1,t2 = np.percentile(network.sgen['p_mw'],[33,66])
     n_coal,n_gas,n_nuke = 0,0,0
 
-    for i in network.sgen.index:
-        if network.sgen.loc[i,'p_mw'] <= t1:
-            network.sgen.loc[i,'name'] = 'coal_{}'.format(n_coal)
-            n_coal += 1
-        elif t1 < network.sgen.loc[i,'p_mw'] <= t2:
-            network.sgen.loc[i,'name'] = 'gas_{}'.format(n_gas)
-            n_gas += 1
-        else:
-            network.sgen.loc[i,'name'] = 'nuke_{}'.format(n_nuke)
-            n_nuke += 1
+    print(network.gen)
+
+    for source in ["nuke", "gas", "coal"]:
+        p_mw = (sum(
+                network.gen[network.gen.name.str.startswith(source)]["p_mw"]
+            )
+            )
+        print(source, ":", p_mw)
 
     return network
             
@@ -67,12 +66,7 @@ def append_costs(network, gas_cost):
         #pandapower.create_poly_cost(network, n_bus, 'gen', cp1_eur_per_mw=0, cp0_eur=cost)
         
 
-# network = pn.case_illinois200()
-# assign_gen_types(network)
-# append_costs(network)
-# print(network.gen)
 # pandapower.plotting.simple_plot(network)
-# pandapower.rundcopp(network)
 
 def calculate_cost(gas_cost):
     net = pn.case_illinois200()
@@ -91,4 +85,7 @@ if __name__ == "__main__":
     price = [calculate_cost(g) for g in gas_cost]
     plt.scatter(gas_cost, price)
     plt.show()
+    # gas_cost = 18.5
+    # price = calculate_cost(gas_cost)
+    # print(price)
     

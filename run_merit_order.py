@@ -1,9 +1,9 @@
 from merit_order import MeritOrder
 
 dict_pmax = {
-    "nuclear" : 100,
-    "gas" : 160,
-    "coal" : 50
+    "nuclear" : 1363,
+    "gas" : 286,
+    "coal" : 34
     
 }
 
@@ -13,7 +13,7 @@ dict_price = {
     "coal" : 30
 }
 
-demand = 300
+demand = 1500
 
 mo = MeritOrder(dict_pmax, dict_price, demand)
 
