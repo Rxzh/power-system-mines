@@ -28,6 +28,7 @@ class MeritOrder(object):
             production += self.dict_pmax[source]
             dict_price.pop(source)
 
+
         return source, self.dict_price[source]
 
     def _get_df(self):
@@ -47,7 +48,10 @@ class MeritOrder(object):
         plt.rcParams["font.size"] = 16
 
         df = self._get_df()
-        power_plants = list(self.dict_pmax.keys())
+
+        power_plants = dict(sorted(self.dict_price.items(), key=lambda item: item[1]))
+        power_plants = list(power_plants.keys())
+        # power_plants = list(self.dict_pmax.keys())
 
         colors = [
             "yellow",
